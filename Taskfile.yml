@@ -15,6 +15,11 @@ tasks:
     cmds:
       - cmd: hugo server --buildDrafts
 
+  server:prod:
+    desc: build hugo server without drafts
+    cmds:
+      - cmd: hugo server
+
   new:content:
     desc: create new content with post bundle
     cmds:
