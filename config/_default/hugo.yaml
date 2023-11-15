@@ -1,0 +1,10 @@
+baseURL: https://will4j.github.io
+languageCode: en-us
+title: William Wang's Blog
+theme: hugo-theme-stack
+
+# https://gohugo.io/getting-started/configuration/#defaultcontentlanguage
+defaultContentLanguage: zh-cn
+# If true, auto-detect Chinese/Japanese/Korean Languages in the content.
+# This will make .Summary and .WordCount behave correctly for CJK languages.
+hasCJKLanguage: true
