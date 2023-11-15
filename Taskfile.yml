@@ -1,0 +1,21 @@
+# https://taskfile.dev/installation/
+# https://taskfile.dev/usage/
+# https://taskfile.dev/styleguide/
+version: '3'
+
+vars:
+
+tasks:
+  default:
+    cmds:
+      - task: server:drafts
+
+  server:drafts:
+    desc: build hugo server with drafts
+    cmds:
+      - cmd: hugo server --buildDrafts
+
+  new:content:
+    desc: create new content with post bundle
+    cmds:
+      - cmd: hugo new content --kind post-bundle posts/{{.CLI_ARGS}}

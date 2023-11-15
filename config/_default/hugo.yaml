@@ -1,10 +1,67 @@
+# https://gohugo.io/getting-started/configuration
 baseURL: https://will4j.github.io
-languageCode: en-us
 title: William Wang's Blog
 theme: hugo-theme-stack
 
-# https://gohugo.io/getting-started/configuration/#defaultcontentlanguage
+# Enable Emoji emoticons support for page content;
+# https://gohugo.io/quick-reference/emojis/
+enableEmoji: true
+# Default number of elements per page in pagination.
+# https://gohugo.io/templates/pagination/
+paginate: 5
+
+# https://gohugo.io/hugo-modules/use-modules/
+# https://gohugo.io/hugo-modules/configuration/
+module:
+  imports: [ ]
+
+# https://gohugo.io/content-management/related/#configure-related-content
+related:
+  includeNewer: true
+  threshold: 60
+  toLower: false
+  indices:
+    - name: tags
+      weight: 100
+    - name: categories
+      weight: 200
+
+    # Content without language indicator will default to this language.
 defaultContentLanguage: zh-cn
+defaultContentLanguageInSubdir: false
 # If true, auto-detect Chinese/Japanese/Korean Languages in the content.
 # This will make .Summary and .WordCount behave correctly for CJK languages.
 hasCJKLanguage: true
+# see languages.yaml
+
+# https://gohugo.io/getting-started/configuration-markup/
+markup:
+  defaultMarkdownHandler: goldmark
+  goldmark:
+    renderer:
+      unsafe: true
+  highlight:
+    noClasses: false
+    codeFences: true
+    guessSyntax: true
+    lineNoStart: 1
+    lineNos: true
+    lineNumbersInTable: true
+    tabWidth: 4
+  tableOfContents:
+    endLevel: 4
+    ordered: true
+    startLevel: 2
+
+# hugo directories
+archetypeDir: archetypes
+assetDir: assets
+contentDir: content
+dataDir: data
+publishDir: public
+themesDir: themes
+
+# Enable generation of robots.txt file.
+enableRobotsTXT: true
+# Copyright notice for your site, typically displayed in the footer.
+copyright: William Wang
