@@ -75,7 +75,7 @@ INFO:__main__:function greeting called with args=('World',) kwargs={'say': 'Hi'}
 
 ### 头等函数
 
-头等函数[[1](#r1)]，其实我更喜欢称之为*一等公民*函数，即在编程语言中，函数作为一等公民，享有完全行为能力，能进行编程语言实体所具备的所有操作，包括但不限于：
+头等函数[[1]]，其实我更喜欢称之为*一等公民*函数，即在编程语言中，函数作为一等公民，享有完全行为能力，能进行编程语言实体所具备的所有操作，包括但不限于：
 
 - 函数作为实参传递
 - 函数作为返回值
@@ -173,7 +173,7 @@ greeting("World", say="Hi") # 使用greeting变量执行，实际调用的是wra
 
 从函数的角度重新认识装饰器后，我们知道显式调用`log(greeting)("World", say="Hi")`已经可以达到装饰器的效果，也清楚了调用的过程和原理，那么`@log`的使用方式有什么不同呢？
 
-其实`@`操作符只是一个语法糖，在PEP 318[[2](#r2)]中有清晰的描述，其达到的效果如下，即使得：
+其实`@`操作符只是一个语法糖，在PEP 318[[2]]中有清晰的描述，其达到的效果如下，即使得：
 
 ```python
 @dec2
@@ -246,7 +246,7 @@ def greeting(name, say="Hello"):
 <function greeting at 0x10459f4c0>
 ```
 
-查看`@functools.wraps`的源码发现，它的作用是将`func`函数的部分元数据信息复制给`wrapper`函数，使其伪装成`func`，这些元数据[[3](#r3)]包括：函数名称（`__name__`）、函数注释（`__doc__`）以及函数模块路径（`__module__`）等，足够应付大部分场景。
+查看`@functools.wraps`的源码发现，它的作用是将`func`函数的部分元数据信息复制给`wrapper`函数，使其伪装成`func`，这些元数据[[3]]包括：函数名称（`__name__`）、函数注释（`__doc__`）以及函数模块路径（`__module__`）等，足够应付大部分场景。
 
 此外，还可以通过`__wrapped__`属性访问被装饰函数的真身：
 
@@ -262,7 +262,7 @@ def greeting(name, say="Hello"):
 
 装饰器通过`@`语法糖，使用`wrapper`函数包裹并通过`@functools.wraps`伪装成目标函数`func`，从而达到增强目标函数功能的目的。使用装饰器后，实际调用的是装饰器内的`wrapper`函数，而不再是`func`函数自身，简单示意如下图：
 
-![装饰器小结](images/decorator-call-flow.png)
+![装饰器小结](images/decorator-flow.png)
 
 在开头提到的三个问题中，我们已经解答了第一个问题，即`@functools.wraps`的作用。接下来看下如何支持日志级别以及`logger`名称，这需要进阶的装饰器用法。
 
@@ -270,7 +270,7 @@ def greeting(name, say="Hello"):
 
 ### 有参装饰器
 
-根据PEP 318[[2](#r2)]对`@`操作符语法糖的说明（可以回顾一下[装饰器语法糖](https://www.notion.so/Python-80a5c4731e664a64a1c0edd942b7bf25?pvs=21)一节的内容），如果给log装饰器添加日志级别参数，其效果应该如下：
+根据PEP 318[[2]]对`@`操作符语法糖的说明（可以回顾一下[装饰器语法糖](#装饰器语法糖)一节的内容），如果给log装饰器添加日志级别参数，其效果应该如下：
 
 ```python
 @log(level=logging.INFO)
@@ -413,7 +413,7 @@ WARNING:__main__:function greeting called with args=('World',) kwargs={} and res
 'Hello World!'
 ```
 
-改造之后的`log`装饰器增加了`_func`参数，总结来说，当`_func`为空时，`log`应该是有参装饰器，否则应该是无参装饰器。同样的逻辑可以使用`partial`[[4](#r4)] [[5](#r5)]重新实现[[6](#r6)]，让代码看起来更直观，同时提取日志名称和日志模板参数，使`log`装饰器更加通用，最终结果如下：
+改造之后的`log`装饰器增加了`_func`参数，总结来说，当`_func`为空时，`log`应该是有参装饰器，否则应该是无参装饰器。同样的逻辑可以使用`partial`[[4]] [[5]]重新实现[[6]]，让代码看起来更直观，同时提取日志名称和日志模板参数，使`log`装饰器更加通用，最终结果如下：
 
 ```python
 import functools
@@ -468,7 +468,7 @@ INFO:__main__:greeting executed, args: ('World',) kwargs: {} result: Hello World
 
 ### 类装饰器
 
-到目前为止，装饰器涉及的参与对象都是函数，接下来加入类的场景，装饰器作用在类上有两种方式：一种是装饰类方法，这种方式其实与装饰函数相同；另一种是装饰类声明，其实现由PEP 3129[[7](#r7)]定义，语法糖效果如下：
+到目前为止，装饰器涉及的参与对象都是函数，接下来加入类的场景，装饰器作用在类上有两种方式：一种是装饰类方法，这种方式其实与装饰函数相同；另一种是装饰类声明，其实现由PEP 3129[[7]]定义，语法糖效果如下：
 
 ```python
 @foo
@@ -483,7 +483,7 @@ class A:
 A = foo(bar(A))
 ```
 
-装饰器在类声明上主要的用途是修改类的元数据，并且其修改不会被继承，典型的使用场景是内置装饰器`dataclass`，它改变了类的初始化过程，同时提供了属性冻结（只读）等特性。`dataclass`太复杂，下面以一个相对简单的`singleton`装饰器[[8](#r8)]来实现装饰类：
+装饰器在类声明上主要的用途是修改类的元数据，并且其修改不会被继承，典型的使用场景是内置装饰器`dataclass`，它改变了类的初始化过程，同时提供了属性冻结（只读）等特性。`dataclass`太复杂，下面以一个相对简单的`singleton`装饰器[[8]]来实现装饰类：
 
 ```python
 import functools
@@ -520,13 +520,13 @@ True
 
 ## 基于类实现装饰器
 
-除了使用函数外，用类也可以实现装饰器，一切只需要符合语法糖的规则，所以前提是类的实例也能像函数一样被调用，而这正是`callable` [[9](#r9)]特性所支持的。
+除了使用函数外，用类也可以实现装饰器，一切只需要符合语法糖的规则，所以前提是类的实例也能像函数一样被调用，而这正是`callable` [[9]]特性所支持的。
 
 在Python中，所有能够被调用（不管是有参还是无参）的对象都属于`callable`对象，除了最直观的函数，类也是`callable`对象（调用类即类的构造函数），实现了`__call__`方法的类实例也一样。
 
 ### 类的`__call__`方法
 
-类的`__call__`方法[[10](#r10)]达到的效果是把所有对实例的调用都转换为对实例`__call__`方法的调用：
+类的`__call__`方法[[10]]达到的效果是把所有对实例的调用都转换为对实例`__call__`方法的调用：
 
 ```python
 class A:
@@ -623,7 +623,7 @@ WARNING:__main__:function greeting called with args=('World',) kwargs={} and res
 'Hello World!'
 ```
 
-这版实现看起来很繁琐，框架性的代码占比较大，可以抽取一个装饰器基类[[11](#r11)]，封装装饰器构造的公共代码，这样创建新的装饰器就会简洁很多了。
+这版实现看起来很繁琐，框架性的代码占比较大，可以抽取一个装饰器基类[[11]]，封装装饰器构造的公共代码，这样创建新的装饰器就会简洁很多了。
 
 ### 小心状态化
 
@@ -670,9 +670,9 @@ Python装饰器初看很简单，但是要构建一个通用且稳定的装饰�
 
 三项基本法则和三个前提条件是我在Python装饰器世界中发现的不变的部分，我把它们分享给你。
 
-使用装饰器可以实现很多非常极客的功能，比如单例模式、缓存、数据校验、注册事件监听者、异步调用等，有些功能也许你已经使用过，下次再遇到不妨停下来看看源码，相信你已经能够一眼就看懂它的实现了。限于篇幅，实战部分不再展开，可参考资料[[8](#r8)] [[12](#r12)]，里面有很多实用装饰器，酷壳[[12](#r12)]中甚至引用了一个装饰器合集[[13](#r13)]，里面有40多个实用装饰器，牛哇。
+使用装饰器可以实现很多非常极客的功能，比如单例模式、缓存、数据校验、注册事件监听者、异步调用等，有些功能也许你已经使用过，下次再遇到不妨停下来看看源码，相信你已经能够一眼就看懂它的实现了。限于篇幅，实战部分不再展开，可参考资料[[8]][[12]]，里面有很多实用装饰器，酷壳[[12]]中甚至引用了一个装饰器合集[[13]]，里面有40多个实用装饰器，牛哇。
 
-最后，再奉上一份后台任务装饰器代码[[14](#r14)]，作抛砖引玉之用，以上。
+最后，再奉上一份后台任务装饰器代码[[14]]，作抛砖引玉之用，以上。
 
 ## 后记
 
@@ -693,24 +693,39 @@ Python装饰器初看很简单，但是要构建一个通用且稳定的装饰�
 
 1. 2002年10月14日，Python 2.2.2 版本发布，引入了`staticmethod`和`classmethod`，使用方式[纯靠手动](https://www.python.org/download/releases/2.2.2/descrintro/#staticmethods)，如`foo = staticmethod(foo)`，期望未来会有一个语法来解决这个问题的种子在彼时就被埋下了。
 2. 2002年2月至2004年7月，与装饰器语法相关的讨论在社区持续进行，无数的提案被提交，如单词类的`as`、`using`等，符号类的`;...`、`<…>`、`|…`、`[…]`等，其中`[…]`是`@…`的强力竞争者。
-3. 2003年6月5日，定义装饰器规范的PEP 318[2](#r2)创建，彼时的标题还是`pep 318, Decorators for Functions, Methods and Classes`，PEP 318经多次修改，历时近14个月，最终只支持函数和方法装饰器。
+3. 2003年6月5日，定义装饰器规范的PEP 318[2]创建，彼时的标题还是`pep 318, Decorators for Functions, Methods and Classes`，PEP 318经多次修改，历时近14个月，最终只支持函数和方法装饰器。
 4. 2004年6月7日至9日，欧洲Python开发者大会召开，Python之父Guido携带社区提案到会上进行讨论，但仍未有结论。
 5. 2004年7月30号，”Pie-Thon”挑战（2003年Parrot虚拟机开发者Dag发起的挑战，比较Python通过Parrot虚拟机和CPython运行的性能）在OSCON上兑现，作为赢家的Guido可以往Dag脸上丢一个奶油派，社区普遍认为这个事件对Guido最终决定使用`@`具有重要作用，因而很多人称之为“命运之派“。
 6. 2004年8月2日，Anthony在Guido授意下提交了一版`@`[装饰器实现](https://mail.python.org/pipermail/python-dev/2004-August/046599.html)，因为形状类似派，Barry给它取了个外号叫”[派-装饰器](https://mail.python.org/pipermail/python-dev/2004-August/046613.html)“。
 
 ## 参考资料
 
-<a id="r1"/>[1]. [维基百科：头等函数](https://zh.wikipedia.org/wiki/%E5%A4%B4%E7%AD%89%E5%87%BD%E6%95%B0)  
-<a id="r2"/>[2]. [PEP 318 – Decorators for Functions and Methods](https://peps.python.org/pep-0318/)  
-<a id="r3"/>[3]. [Python documentation: User-defined functions](https://docs.python.org/3/reference/datamodel.html?highlight=__doc__#user-defined-functions)    
-<a id="r4"/>[4]. [Python documentation: functools.partial](https://docs.python.org/3/library/functools.html#functools.partial)  
-<a id="r5"/>[5]. [Python documentation: partial-objects](https://docs.python.org/3/library/functools.html#partial-objects)  
-<a id="r6"/>[6]. [Python Cookbook 3rd Edition: 9.6 带可选参数的装饰器](https://python3-cookbook.readthedocs.io/zh-cn/latest/c09/p06_define_decorator_that_takes_optional_argument.html)  
-<a id="r7"/>[7]. [PEP 3129 – Class Decorators](https://peps.python.org/pep-3129/)  
-<a id="r8"/>[8]. [realpython: primer-on-python-decorators](https://realpython.com/primer-on-python-decorators/)  
-<a id="r9"/>[9]. [Python documentation: term-callable](https://docs.python.org/3/glossary.html#term-callable)  
-<a id="r10"/>[10]. [Python documentation: Emulating callable objects](https://docs.python.org/3/reference/datamodel.html#emulating-callable-objects)  
-<a id="r11"/>[11]. [people-doc: Class-based decorators with Python](https://tech.people-doc.com/python-class-based-decorators.html)  
-<a id="r12"/>[12]. [酷壳：PYTHON修饰器的函数式编程](https://coolshell.cn/articles/11265.html)  
-<a id="r13"/>[13]. [PythonDecoratorLibrary](https://wiki.python.org/moin/PythonDecoratorLibrary)  
-<a id="r14"/>[14]. [gist: add background task with task register decorator](https://gist.github.com/will4j/21f8cefbd32ea5684cb9353521cabceb)  
+\[1\]. [维基百科：头等函数][1]  
+\[2\]. [PEP 318 – Decorators for Functions and Methods][2]  
+\[3\]. [Python documentation: User-defined functions][3]    
+\[4\]. [Python documentation: functools.partial][4]  
+\[5\]. [Python documentation: partial-objects][5]  
+\[6\]. [Python Cookbook 3rd Edition: 9.6 带可选参数的装饰器][6]  
+\[7\]. [PEP 3129 – Class Decorators][7]  
+\[8\]. [realpython: primer-on-python-decorators][8]  
+\[9\]. [Python documentation: term-callable][9]  
+\[10\]. [Python documentation: Emulating callable objects][10]  
+\[11\]. [people-doc: Class-based decorators with Python][11]  
+\[12\]. [酷壳：PYTHON修饰器的函数式编程][12]  
+\[13\]. [PythonDecoratorLibrary][13]  
+\[14\]. [gist: add background task with task register decorator][14]  
+
+[1]: https://zh.wikipedia.org/wiki/%E5%A4%B4%E7%AD%89%E5%87%BD%E6%95%B0
+[2]:  https://peps.python.org/pep-0318/
+[3]:https://docs.python.org/3/reference/datamodel.html?highlight=__doc__#user-defined-functions
+[4]:https://docs.python.org/3/library/functools.html#functools.partial
+[5]:https://docs.python.org/3/library/functools.html#partial-objects
+[6]:https://python3-cookbook.readthedocs.io/zh-cn/latest/c09/p06_define_decorator_that_takes_optional_argument.html
+[7]: https://peps.python.org/pep-3129/
+[8]:https://realpython.com/primer-on-python-decorators/
+[9]: https://docs.python.org/3/glossary.html#term-callable
+[10]:https://docs.python.org/3/reference/datamodel.html#emulating-callable-objects
+[11]: https://tech.people-doc.com/python-class-based-decorators.html
+[12]:https://coolshell.cn/articles/11265.html
+[13]: https://wiki.python.org/moin/PythonDecoratorLibrary
+[14]: https://gist.github.com/will4j/21f8cefbd32ea5684cb9353521cabceb
