@@ -54,5 +54,8 @@ tagCloud:
 breadcrumb:
   enable: true
 
+app:
+  svgFavicon: /favicon.svg
+
 description: William Wang's Note.
 keywords: ["Programming", "Software Engineering", "DevOps", "Kubernetes"]
