@@ -51,4 +51,6 @@ jobs:
           external_repository: will4j/will4j.github.io
           publish_dir: ./public
           publish_branch: main
-          commit_message: ${{ github.event.head_commit.message }}
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          full_commit_message: ${{ github.event.head_commit.message }}
