@@ -31,6 +31,21 @@ search:
     # https://fusejs.io/api/options.html
     isCaseSensitive: false
 
+page:
+  comment:
+    enable: true
+    giscus:
+      enable: true
+      repo: will4j/will4j.github.io
+      repoId: R_kgDOKuAcSg
+      category: Announcements
+      categoryId: DIC_kwDOKuAcSs4CbAb9
+      mapping: pathname
+      strict: "0"
+      reactionsEnabled: "1"
+      emitMetadata: "0"
+      inputPosition: bottom
+
 footer:
   enable: true
   since: 2023
