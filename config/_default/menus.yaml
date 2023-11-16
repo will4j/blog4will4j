@@ -1,9 +1,30 @@
 # https://gohugo.io/content-management/menus
 # https://gohugo.io/content-management/multilingual/#menus
-main: [ ]
-social:
-  - identifier: github
-    name: GitHub
-    url: https://github.com/will4j
+# https://fixit.lruihao.cn/documentation/basics/#menu-configuration
+# https://fontawesome.com/v4/icons/
+main:
+  - identifier: home
+    name: 首页
+    url: /
+    weight: 1
     params:
-      icon: brand-github
+      icon: fa-solid fa-home
+  - identifier: posts
+    name: 文章
+    url: /posts/
+    weight: 2
+    params:
+      draft: false
+      icon: fa-solid fa-archive
+  - identifier: categories
+    name: 分类
+    url: /categories/
+    weight: 3
+    params:
+      icon: fa-solid fa-th-list
+  - identifier: tags
+    name: 标签
+    url: /tags/
+    weight: 4
+    params:
+      icon: fa-solid fa-tags

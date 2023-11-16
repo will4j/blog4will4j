@@ -1,6 +1,5 @@
 # https://gohugo.io/content-management/urls/#permalinks
 page:
-  posts: /blogs/:slug/
-  page: /:slug/
+  posts: /posts/:slug/
 section:
-  posts: /blogs/
+  posts: /posts/

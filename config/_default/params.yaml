@@ -1,53 +1,58 @@
-# https://stack.jimmycai.com/config/site
-mainSections:
-  - posts
-# Output page's full content in RSS.
-rssFullContent: true
-favicon: /favicon.ico
+# https://fixit.lruihao.cn/documentation/basics/#theme-configuration
 
-# https://stack.jimmycai.com/config/article
-article:
-  math: true
-  toc: true
-  readingTime: true
+header:
+  title:
+    logo: ""
+    name: William Wang's Note
+    pre: <i class="fa fa-code"></i>
+    typeit: true
 
-# https://stack.jimmycai.com/config/sidebar
-sidebar:
-  emoji: 🍥
-  subtitle: The last leg of a journey just marks the halfway point.
-  avatar:
-    enabled: true
-    local: true
-    src: img/avatar.png
+defaultTheme: auto
+dateFormat: "2006-01-02"
 
-# https://stack.jimmycai.com/config/widgets
-widgets:
-  homepage:
-    - type: search
-    - type: archives
-      params:
-        limit: 5
-    - type: categories
-      params:
-        limit: 10
-    - type: tag-cloud
-      params:
-        limit: 10
-  page:
-    - type: toc
+home:
+  profile:
+    enable: true
+    subtitle: The last leg of a journey just marks the halfway point.
+    avatarMenu: github
+    avatarURL: /img/avatar.png
+  posts:
+    enable: true
+    paginate: 6
 
-# https://stack.jimmycai.com/config/color-scheme
-colorScheme:
-  # Display toggle
-  toggle: true
-  # Available values: auto, light, dark
-  default: auto
+social:
+  GitHub: will4j
+  Email: williamw0825@gmail.com
 
-# https://stack.jimmycai.com/config/date-format
-dateFormat:
-  published: Jan 02, 2006
-  lastUpdated: Jan 02, 2006 15:04 MST
+search:
+  enable: true
+  type: fuse
+  fuse:
+    # https://fusejs.io/api/options.html
+    isCaseSensitive: false
 
-# https://stack.jimmycai.com/config/footer
 footer:
+  enable: true
   since: 2023
+  hugo: true
+  siteTime:
+    enable: true
+    value: "2023-11-16T07:40:29+08:00"
+  license: '<a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a>'
+  order:
+    powered: 1
+    copyright: last
+    statistics: first
+
+section:
+  recentlyUpdated:
+    enable: true
+
+tagCloud:
+  enable: true
+
+breadcrumb:
+  enable: true
+
+description: William Wang's Note.
+keywords: ["Programming", "Software Engineering", "DevOps", "Kubernetes"]

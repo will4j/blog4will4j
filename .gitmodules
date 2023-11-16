@@ -2,3 +2,7 @@
 	path = themes/hugo-theme-stack
 	url = ../hugo-theme-stack.git
 	branch = main
+[submodule "themes/FixIt"]
+	path = themes/FixIt
+	url = ../FixIt.git
+	branch = main

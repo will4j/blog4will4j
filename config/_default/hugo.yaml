@@ -1,11 +1,8 @@
 # https://gohugo.io/getting-started/configuration
 baseURL: https://will4j.github.io
-title: William Wang's Blog
-theme: hugo-theme-stack
+title: William Wang's Note
+theme: FixIt
 
-# Enable Emoji emoticons support for page content;
-# https://gohugo.io/quick-reference/emojis/
-enableEmoji: true
 # Default number of elements per page in pagination.
 # https://gohugo.io/templates/pagination/
 paginate: 5
@@ -26,8 +23,9 @@ related:
     - name: categories
       weight: 200
 
-    # Content without language indicator will default to this language.
+# Content without language indicator will default to this language.
 defaultContentLanguage: zh-cn
+languageCode: en
 defaultContentLanguageInSubdir: false
 # If true, auto-detect Chinese/Japanese/Korean Languages in the content.
 # This will make .Summary and .WordCount behave correctly for CJK languages.
@@ -52,6 +50,21 @@ markup:
     endLevel: 4
     ordered: true
     startLevel: 2
+
+# Enable Emoji emoticons support for page content;
+# https://gohugo.io/quick-reference/emojis/
+enableEmoji: true
+# Enable .GitInfo object for each page (if the Hugo site is versioned by Git).
+# This will then update the Lastmod parameter for each page using the last git commit date for that content file.
+enableGitInfo: true
+# The length of text in words to show in a .Summary.
+summaryLength: 150
+# https://gohugo.io/getting-started/configuration/#configure-front-matter
+frontmatter:
+  lastmod: [ "lastmod", ":git", ":fileModTime", ":defalut" ]
+
+# Include drafts when building.
+buildDrafts: false
 
 # hugo directories
 archetypeDir: archetypes

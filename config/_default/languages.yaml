@@ -2,7 +2,14 @@
 zh-cn:
   languageName: 简体中文
 
-  title: 水王的博客
+  title: 水王笔记
   params:
-    sidebar:
-      subtitle: 行百里者半九十。
+    description: 水王笔记
+    home:
+      profile:
+        subtitle: 行百里者半九十。
+    header:
+      title:
+        name: 水王笔记
+    app:
+      title: 水王笔记

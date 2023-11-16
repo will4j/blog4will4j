@@ -5,7 +5,9 @@ date: {{ .Date }}
 image:
 hidden: false
 comments: true
-tags: []
-categories: []
+tags:
+  - draft
+categories:
+  - draft
 draft: true
 ---

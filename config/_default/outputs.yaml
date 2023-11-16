@@ -1,0 +1,9 @@
+# https://gohugo.io/templates/output-formats/#customizing-output-formats
+# https://gohugo.io/templates/output-formats/#output-format-definitions
+home:
+  - html
+  - rss
+  - json
+page:
+  - html
+  - markdown
