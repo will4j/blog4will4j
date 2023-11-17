@@ -2,16 +2,15 @@
 slug: "explain-python-decorator-in-detail"
 title: "Python 装饰器详解"
 date: 2023-11-14T14:05:42+08:00
-lastmod: 2023-11-15T21:15:26+08:00
-image:
 description: "从函数式编程和语法糖角度详解 Python 装饰器原理。"
-hidden: false
-comments: true
+author:
+   name: 水王
 tags:
    - python
 categories:
-   - python-eng
+   - python-lang
 draft: false
+comment: true
 ---
 
 > 工欲善其事，必先利其器。—《论语·卫灵公》
