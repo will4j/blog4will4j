@@ -1,9 +1,0 @@
-{
-  "origins": [
-    "https://will4j.github.io"
-  ],
-  "originsRegex": [
-    "http://localhost:[0-9]+"
-  ],
-  "defaultCommentOrder": "oldest"
-}

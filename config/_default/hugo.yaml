@@ -27,9 +27,6 @@ related:
 defaultContentLanguage: zh-cn
 languageCode: en
 defaultContentLanguageInSubdir: false
-# If true, auto-detect Chinese/Japanese/Korean Languages in the content.
-# This will make .Summary and .WordCount behave correctly for CJK languages.
-hasCJKLanguage: true
 # see languages.yaml
 
 # https://gohugo.io/getting-started/configuration-markup/
