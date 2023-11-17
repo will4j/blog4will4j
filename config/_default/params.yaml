@@ -36,10 +36,10 @@ page:
     enable: true
     giscus:
       enable: true
-      repo: will4j/will4j.github.io
-      repoId: R_kgDOKuAcSg
-      category: Announcements
-      categoryId: DIC_kwDOKuAcSs4CbAb9
+      repo: will4j/blog-comment-base
+      repoId: R_kgDOKus4vg
+      category: Blog Comments
+      categoryId: DIC_kwDOKus4vs4CbCP2
       mapping: pathname
       strict: "0"
       reactionsEnabled: "1"
