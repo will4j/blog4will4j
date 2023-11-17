@@ -1,17 +1,17 @@
 ---
-slug: "{{ .Name }}"
-title: "{{ replace .Name "-" " " | title }}"
-date: {{ .Date }}
+slug: "python-engineering-loguru-logging"
+title: "Python 工程化：loguru 日志集成"
+date: 2023-11-17T06:33:49+08:00
 author:
-  name:
+  name: 水王
 tags:
-  - draft
+  - python
 categories:
-  - draft
+  - python-eng
 draft: true
 comment: true
 description:
-keywords:
+keywords: ["loguru", "logging", "python"]
 license:
 hiddenFromHomePage: false
 hiddenFromSearch: false
@@ -29,3 +29,4 @@ message:
 
 # See details front matter: https://fixit.lruihao.cn/documentation/content-management/introduction/#front-matter
 ---
+
