@@ -45,6 +45,7 @@ page:
       reactionsEnabled: "1"
       emitMetadata: "0"
       inputPosition: bottom
+      lang: zh-CN
 
 footer:
   enable: true
