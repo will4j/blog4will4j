@@ -63,14 +63,6 @@ frontmatter:
 # Include drafts when building.
 buildDrafts: false
 
-# hugo directories
-archetypeDir: archetypes
-assetDir: assets
-contentDir: content
-dataDir: data
-publishDir: public
-themesDir: themes
-
 # Enable generation of robots.txt file.
 enableRobotsTXT: true
 # Copyright notice for your site, typically displayed in the footer.

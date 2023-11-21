@@ -1,0 +1,19 @@
+# https://gohugo.io/hugo-modules/configuration/#module-configuration-mounts
+mounts:
+  - source: content
+    target: content
+    excludeFiles:
+      - "**.xmind"
+      - "**.graffle"
+  - source: static
+    target: static
+  - source: layouts
+    target: layouts
+  - source: data
+    target: data
+  - source: assets
+    target: assets
+  - source: i18n
+    target: i18n
+  - source: archetypes
+    target: archetypes

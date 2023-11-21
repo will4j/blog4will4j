@@ -1,17 +1,17 @@
 ---
-slug: "python-engineering-loguru-logging"
-title: "Python 工程化：loguru 日志集成"
-date: 2023-11-17T06:33:49+08:00
+slug: "python-enum-explained"
+title: "Python 枚举详解"
+date: 2023-11-20T12:33:23+08:00
 author:
-  name: 水王
+  name:
 tags:
   - python
 categories:
-  - python-eng
+  - python-lang
 draft: true
 comment: true
-description:
-keywords: ["loguru", "logging", "python"]
+description: ""
+keywords:
 license:
 hiddenFromHomePage: false
 hiddenFromSearch: false
@@ -24,4 +24,3 @@ resources:
 toc: true
 math: false
 ---
-
