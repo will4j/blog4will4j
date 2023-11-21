@@ -4,7 +4,7 @@ header:
   title:
     logo: ""
     name: Programmer William Wang
-    pre: <i class="fa fa-code"></i>
+    pre: <i class="fa fa-code">&nbsp</i>
     typeit: true
 
 defaultTheme: auto
@@ -69,11 +69,21 @@ section:
 tagCloud:
   enable: true
 
+cdn:
+  data: jsdelivr.yml
+
+githubCorner:
+  enable: true
+  permalink: "https://github.com/will4j"
+  title: "Visit Me on GitHub"
+  position: left
+
 # Busuanzi count
 ibruce:
   enable: true
   enablePost: true
 
+# 面包屑
 breadcrumb:
   enable: true
 
