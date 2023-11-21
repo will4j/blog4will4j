@@ -3,7 +3,7 @@
 header:
   title:
     logo: ""
-    name: William Wang's Note
+    name: Programmer William Wang
     pre: <i class="fa fa-code"></i>
     typeit: true
 
@@ -80,5 +80,5 @@ breadcrumb:
 app:
   svgFavicon: /favicon.svg
 
-description: William Wang's Note.
+description: Programmer William Wang's blog.
 keywords: ["Programming", "Software Engineering", "DevOps", "Kubernetes"]
