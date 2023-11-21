@@ -25,21 +25,8 @@ jobs:
       - name: Install Dart Sass
         run: sudo snap install dart-sass
 
-      - name: Checkout Source Code
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-          fetch-depth: 0
-
-      - name: Cache Hugo resources
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-hugo-resources
-        with:
-          path: resources
-          key: ${{ env.cache-name }}
-
-      - uses: actions/setup-go@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
         with:
           go-version: "^1.21.4"
       - run: go version
@@ -49,6 +36,12 @@ jobs:
         with:
           hugo-version: ${{ env.HUGO_VERSION }}
           extended: true
+
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
 
       - name: Build with Hugo
         env:
