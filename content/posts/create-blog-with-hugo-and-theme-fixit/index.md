@@ -58,16 +58,22 @@ hugo v0.120.4-f11bca5fec2ebb3a02727fb2a5cfb08da96fd9df+extended darwin/arm64 Bui
 ## 博客创建
 从 Hugo 主题站[[6]]挑选自己喜欢的主题，大多数主题都有 demo 可以体验，我选的是 [FixIt](https://themes.gohugo.io/themes/fixit/)。
 
+### GitHub 仓库准备
 接下来创建三个 GitHub 仓库：
-1. \<username\>.github.io：GitHub Pages 仓库，仓库名必须使用用户名，必须为公开仓库，用于博客部署。
-2. myblog：私有仓库，名称可自定义，用于存储博客源代码，包括文章和配置。
-3. FixIt：从 FixIt 源代码库[[7]] fork，用于自定义配置主题，另外我 fork 过来后将默认分支从 master 重命名成了 main。
+1. GitHub Pages 仓库 \<username\>.github.io：GitHub Pages 仓库，仓库名前缀必须使用用户名，必须为公开仓库，用于博客部署。
+2. 博客仓库 myblog：私有仓库，名称可自定义，用于存储博客源代码，包括文章和配置。
+3. 主题仓库 FixIt：从 FixIt 源代码库[[7]] fork，用于自定义配置主题，另外我 fork 过来后将默认分支从 master 重命名成了 main。
 
 三个仓库的关系如图所示：
 
-三个仓库中，只有1号仓库是必须的，如果不在意博客内容和源代码私有性，可以去掉 myblog 仓库，将博客源代码存储到 \<username\>.github.io 仓库中，GitHub Pages 支持使用特定分支（默认是 gh-pages）部署。如果不准备自定义修改主题，可以去掉 FixIt 仓库，直接使用官方源代码仓库或者通过 go module 进行主题安装。
+![Hugo GitHub 仓库](images/hugo-github-repos.png)
 
-仓库准备好之后，可以通过 Hugo 命令行工具[[8]]快速创建站点，Hugo 支持 yaml、toml 和 json 三种配置格式，我的博客使用 yaml：
+博客仓库将主题以 submodule 的形式导入到 themes 文件夹，通过配置文件指定使用的主题；当博客仓库的代码提交到 main 分支时，会触发 GitHub Actions 将 Hugo 构建好的静态站点文件部署到 GitHub Pages 仓库，用户即可通过 GitHub Pages 域名进行博客访问。
+
+三个仓库中，只有 GitHub pages 仓库是必须的，如果不在意博客内容和源代码隐私性，可以去掉 myblog 仓库，将博客源代码存储到 \<username\>.github.io 仓库中，GitHub Pages 支持使用特定分支（默认是 gh-pages）部署。如果不准备自定义修改主题，可以去掉 FixIt 仓库，直接使用官方源代码仓库或者通过 Hugo module 进行主题安装。
+
+### 博客站点创建
+仓库准备好之后，可以通过 Hugo 命令行工具[[8]]快速创建站点，Hugo 默认使用 toml 格式配置，同时支持 yaml 和 json，我的博客使用 yaml：
 ```shell
 $ hugo new site --format yaml myblog
 # 切换到博客仓库目录
@@ -95,6 +101,36 @@ title: My New Hugo Site
 theme: FixIt
 ```
 
+Hugo 默认的站点目录结构[[9]]如下：
++ archetypes：原型目录，用于定义各种类型的内容模板。
++ assets：资产目录，用于放置 CSS，JavaScript 等全局资源库。
++ config：配置文件目录，主配置文件 hugo.yaml，支持多文件配置、多环境配置[[10]]。
++ content：内容目录，用于放置文章、分类、标签等内容页面。
++ data：数据目录，用于存取自定义配置数据。
++ i18n：国际化目录，用于页面文本的多语言翻译。
++ layouts：布局目录，用于放置 html 模板。
++ public：部署目录，用于存放 Hugo 构建的静态站点文件。
++ resources：资源目录，包含 Hugo 资产构建流水线产生的可缓存文件，如 CSS、图片等。
++ static：静态资源目录，该目录下的文件会被直接拷贝到站点根目录。
++ themes：主题目录，包含 Hugo 站点可以使用的主题。
+
+可通过 Hugo mounts 配置[[11]]自定义站点目录结构。
+
+### 文章创建及预览
+Hugo 支持 Page bundles [[12]]模式，即文章内容打包在一个文件夹下，内部可以独立包含图片、子页面等静态资源，文章以 index.md 作为入口，FixIt 主题已经提供了对应模板，可快速创建文章：
+```shell
+# 创建 Page bundles 文章
+$ hugo new content --kind post-bundle posts/hello-world
+# 文章目录结构
+$ tree content/posts/hello-world
+content/posts/hello-world
+├── images
+└── index.md
+```
+查看生成的 index.md 文件，会发现
+
+## 主题配置
+
 ## 参考资料
 \[1\]: [Hugo 官方文档：What is Hugo][1]  
 \[2\]: [GitHub: Hugo 源代码仓库][2]  
@@ -104,6 +140,10 @@ theme: FixIt
 \[6\]: [Hugo 官方文档：Hugo 主题站][6]  
 \[7\]: [GitHub: FixIt 源代码仓库][7]  
 \[8\]: [Hugo 官方文档：Hugo 命令行工具][8]  
+\[9\]: [Hugo 官方文档：Hugo 目录结构][9]  
+\[10\]: [Hugo 官方文档：Hugo 配置文件目录][10]  
+\[11\]: [Hugo 官方文档：Hugo 目录挂载][11]  
+\[12\]: [Hugo 官方文档：Page bundles][12]  
 
 [1]:https://gohugo.io/about/what-is-hugo/
 [2]:https://github.com/gohugoio/hugo
@@ -113,3 +153,7 @@ theme: FixIt
 [6]:https://themes.gohugo.io/
 [7]:https://github.com/hugo-fixit/FixIt
 [8]:https://gohugo.io/commands/hugo/
+[9]:https://gohugo.io/getting-started/directory-structure/
+[10]:https://gohugo.io/getting-started/configuration/#configuration-directory
+[11]:https://gohugo.io/hugo-modules/configuration/#module-configuration-mounts
+[12]:https://gohugo.io/content-management/page-bundles/
