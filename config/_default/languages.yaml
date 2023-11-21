@@ -7,14 +7,14 @@ zh-cn:
   # This will make .Summary and .WordCount behave correctly for CJK languages.
   hasCJKLanguage: true
 
-  title: 水王笔记
+  title: 程序员水王
   params:
-    description: 水王笔记
+    description: 程序员水王的个人博客
     home:
       profile:
         subtitle: 行百里者半九十。
     header:
       title:
-        name: 水王笔记
+        name: 程序员水王
     app:
-      title: 水王笔记
+      title: 程序员水王

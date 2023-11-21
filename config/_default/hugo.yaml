@@ -1,6 +1,6 @@
 # https://gohugo.io/getting-started/configuration
 baseURL: https://will4j.github.io
-title: William Wang's Note
+title: Programmer William Wang
 theme: FixIt
 
 # Default number of elements per page in pagination.
