@@ -18,7 +18,7 @@ tasks:
   server:prod:
     desc: build hugo server without drafts
     cmds:
-      - cmd: hugo server
+      - cmd: hugo server -e production
 
   new:content:
     desc: create new content with post bundle
