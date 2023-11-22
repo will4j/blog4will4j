@@ -1,13 +1,13 @@
 ---
-slug: "{{ .Name }}"
-title: "{{ replace .Name "-" " " | title }}"
-date: {{ .Date }}
+slug: "custom-domain-of-github-pages"
+title: "Github Pages 自定义域名"
+date: 2023-11-22T17:20:14+08:00
 author:
-  name:
+  name: 水王
 tags:
-  - draft
+  - Domain
 categories:
-  - draft
+  - blog-build
 draft: true
 comment: true
 description:
@@ -24,3 +24,4 @@ resources:
 toc: true
 math: false
 ---
+
