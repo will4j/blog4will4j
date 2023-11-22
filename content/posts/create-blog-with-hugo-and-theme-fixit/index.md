@@ -60,9 +60,9 @@ hugo v0.120.4-f11bca5fec2ebb3a02727fb2a5cfb08da96fd9df+extended darwin/arm64 Bui
 
 ### GitHub 仓库准备
 接下来创建三个 GitHub 仓库：
-1. GitHub Pages 仓库 \<username\>.github.io：GitHub Pages 仓库，仓库名前缀必须使用用户名，必须为公开仓库，用于博客部署。
-2. 博客仓库 myblog：私有仓库，名称可自定义，用于存储博客源代码，包括文章和配置。
-3. 主题仓库 FixIt：从 FixIt 源代码库[[7]] fork，用于自定义配置主题，另外我 fork 过来后将默认分支从 master 重命名成了 main。
+1. GitHub Pages 仓库：仓库名前缀必须使用用户名，格式为\<username\>.github.io，必须为公开仓库，用于博客部署。
+2. 博客仓库：可随意命名如 myblog，私有仓库，用于存储博客源代码，包括文章和配置。
+3. 主题仓库：从 FixIt 源代码库[[7]] fork，用于自定义配置主题，另外我 fork 过来后将默认分支从 master 重命名成了 main。
 
 三个仓库的关系如图所示：
 
@@ -102,7 +102,7 @@ theme: FixIt
 ```
 
 Hugo 默认的站点目录结构[[9]]如下：
-+ archetypes：原型目录，用于定义各种类型的内容模板。
++ archetypes：原型目录，用于定义各种类型的内容模板。原型匹配顺序是优先本站点内，其次再到主题内查找。
 + assets：资产目录，用于放置 CSS，JavaScript 等全局资源库。
 + config：配置文件目录，主配置文件 hugo.yaml，支持多文件配置、多环境配置[[10]]。
 + content：内容目录，用于放置文章、分类、标签等内容页面。
@@ -117,17 +117,50 @@ Hugo 默认的站点目录结构[[9]]如下：
 可通过 Hugo mounts 配置[[11]]自定义站点目录结构。
 
 ### 文章创建及预览
-Hugo 支持 Page bundles [[12]]模式，即文章内容打包在一个文件夹下，内部可以独立包含图片、子页面等静态资源，文章以 index.md 作为入口，FixIt 主题已经提供了对应模板，可快速创建文章：
+Hugo 支持 Page bundles [[12]]模式，即文章内容打包在一个文件夹下，内部可以独立包含图片、子页面等静态资源，文章以 index.md 作为入口，可基于 FixIt 主题提供的 post-bundle 原型进行自定义修改：
 ```shell
+# 拷贝主题原型到站点目录
+$ cp -r themes/FixIt/archetypes/post-bundle archetypes
+# 增加博客图片目录，最终结构如下，注意空目录在原型使用时不会生效
+$ tree -a archetypes/post-bundle
+archetypes/post-bundle
+├── images
+│   └── .gitkeep
+└── index.md
 # 创建 Page bundles 文章
 $ hugo new content --kind post-bundle posts/hello-world
 # 文章目录结构
-$ tree content/posts/hello-world
+$ tree -a content/posts/hello-world
 content/posts/hello-world
 ├── images
+│   └── .gitkeep
 └── index.md
+
+# 添加 markdown 内容
+$ echo "\n## Hello World" >> content/posts/hello-world/index.md
 ```
-查看生成的 index.md 文件，会发现
+上面的命令已经成功配置主题并创建了一篇文章，现在可以通过`hugo server --buildDrafts`命令启动本地预览服务，访问启动信息中显示的地址，如`http://localhost:1313`进入首页，点击文章即可预览博客：
+
+![Hugo 第一篇文章](images/hugo-site-init.png)
+
+查看文章 index.md，其内容分为两部分：前置页[[13]]和文章主体。前置页用于配置文章元数据，如标题、分类、标签等显示设置以及评论是否开启等控制开关，文章主体才是 markdown 内容。下面是一段前置页示例，yaml 格式前置页由`---`包裹：
+```yaml
+# content/posts/hello-world/index.md
+---
+# 文章标题
+title: Index
+# 文章创建时间
+date: 2023-11-22T06:51:28+08:00
+# 是否草稿
+draft: true
+# 标签和分类
+tags:
+  - draft
+categories:
+  - draft
+---
+```
+前置页除了 Hugo 预定义的标签外，也支持用户自定义标签，比如 FixIt 主题就定义了很多自定义前置页标签[[14]]。
 
 ## 主题配置
 
@@ -144,6 +177,8 @@ content/posts/hello-world
 \[10\]: [Hugo 官方文档：Hugo 配置文件目录][10]  
 \[11\]: [Hugo 官方文档：Hugo 目录挂载][11]  
 \[12\]: [Hugo 官方文档：Page bundles][12]  
+\[13\]: [Hugo 官方文档：前置页][13]  
+\[14\]: [FixIt 官方文档：前置页配置][14]  
 
 [1]:https://gohugo.io/about/what-is-hugo/
 [2]:https://github.com/gohugoio/hugo
@@ -157,3 +192,5 @@ content/posts/hello-world
 [10]:https://gohugo.io/getting-started/configuration/#configuration-directory
 [11]:https://gohugo.io/hugo-modules/configuration/#module-configuration-mounts
 [12]:https://gohugo.io/content-management/page-bundles/
+[13]:https://gohugo.io/content-management/front-matter/
+[14]:https://fixit.lruihao.cn/documentation/content-management/introduction/#front-matter
