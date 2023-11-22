@@ -1,6 +1,6 @@
 # https://gohugo.io/content-management/multilingual/#configure-languages
 zh-cn:
-  # 这里大小写很重要，定义网站html lang
+  # 这里大小写很重要，定义网站 html lang
   languageCode: zh-CN
   languageName: 简体中文
   # If true, auto-detect Chinese/Japanese/Korean Languages in the content.

@@ -5,7 +5,7 @@ date: 2023-11-20T12:33:23+08:00
 author:
   name:
 tags:
-  - python
+  - Python
 categories:
   - python-lang
 draft: true

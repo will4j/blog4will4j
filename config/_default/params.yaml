@@ -23,7 +23,9 @@ home:
 social:
   GitHub: will4j
   Email: williamw0825@gmail.com
+  RSS: true
 
+# https://fixit.lruihao.cn/documentation/basics/#search-configuration
 search:
   enable: true
   type: fuse
@@ -69,6 +71,7 @@ section:
 tagCloud:
   enable: true
 
+# https://fixit.lruihao.cn/documentation/basics/#cdn-configuration
 cdn:
   data: jsdelivr.yml
 
