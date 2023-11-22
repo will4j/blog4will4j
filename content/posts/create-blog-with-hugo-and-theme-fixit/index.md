@@ -424,15 +424,18 @@ cdn:
 ```
 
 ## 博客部署
+
+### 部署密钥配置
 首先需要配置部署密钥[[18]]，在 GitHub Pages 仓库添加公钥，并允许写入权限：
 
 ![添加部署密钥](images/add-deploy-key.jpg)
 
-在博客仓库添加 Actions 密钥中添加 GitHub Pages 仓库私钥：
+在博客仓库 Actions 密钥中添加 GitHub Pages 仓库部署私钥：
 
 ![添加仓库密钥](images/new-repo-secret.jpg)
 
-在博客仓库增加 GitHub Actions [[19]]：
+### GitHub Action 配置
+在博客仓库增加 Workflows 配置文件[[19]]：
 ```yaml
 # .github/workflows/deploy-to-github-pages.yaml
 ---
@@ -502,7 +505,7 @@ jobs:
 ```
 
 ## 总结
-通过使用 Hugo 和 FixIt 主题创建博客站点，大量减少了网站搭建需要做的重复工作，同时 Hugo 也预留了充分的扩展方式，用户具备极大的自定义空间。
+通过使用 Hugo 和 FixIt 主题创建博客站点，大量减少了网站搭建需要做的重复工作，同时 Hugo 也具备灵活扩展的能力，给用户提供了极大的自定义空间。
 
 GitHub 工作流的引入，使作者可以专注于博客写作本身，本地预览后提交代码即可触发博客更新发布，整体工作流程如下：
 
