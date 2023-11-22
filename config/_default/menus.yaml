@@ -1,7 +1,7 @@
 # https://gohugo.io/content-management/menus
 # https://gohugo.io/content-management/multilingual/#menus
 # https://fixit.lruihao.cn/documentation/basics/#menu-configuration
-# https://fontawesome.com/v4/icons/
+# https://fontawesome.com/icons
 main:
   - identifier: home
     name: 首页

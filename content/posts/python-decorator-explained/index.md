@@ -5,10 +5,12 @@ date: 2023-11-14T14:05:42+08:00
 author:
    name: 水王
 tags:
-   - python
+   - Python
 categories:
    - python-lang
 draft: false
+hiddenFromHomePage: false
+hiddenFromSearch: false
 comment: true
 description: "从函数式编程和语法糖角度详解 Python 装饰器原理。"
 keywords: ["python", "decorator"]

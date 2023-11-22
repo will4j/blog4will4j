@@ -5,7 +5,7 @@ date: 2023-11-17T06:33:49+08:00
 author:
   name: 水王
 tags:
-  - python
+  - Python
 categories:
   - python-eng
 draft: true
