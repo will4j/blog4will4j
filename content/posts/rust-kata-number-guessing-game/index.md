@@ -25,8 +25,10 @@ toc: true
 math: false
 ---
 
+> **Note:** Rust 卡塔系列旨在通过具体场景的编程练习学习 Rust 编程语言，结尾是相关的 Rust 知识点概要总结，附上参考资料以作扩展阅读。
+
 ## 问题描述
-实现一个猜数字游戏：游戏开始前，从玩家输入的数字范围中随机选取一个数字作为答案；每轮游戏根据玩家的输入缩小数字范围，直到用户猜中答案时游戏结束，统计玩家猜的总次数。
+实现一个猜数字游戏：游戏开始前，从玩家输入的数字范围（如1到100）中随机选取一个数字作为答案；每轮游戏根据玩家的输入缩小数字范围，直到玩家猜中答案时游戏结束，统计玩家猜的总次数。
 
 > **Note:** Rust 官网电子书《Rust 编程语言》第二章[[1]]也以猜数字游戏作为示例，这个卡塔较之会稍微复杂一些，但用意都在于通过具体场景演示 Rust 基本语法。
 
@@ -116,7 +118,10 @@ fn input(input_str: &mut String, prompt: &str) {
 ```
 
 ## 代码执行
-```text
+```shell
+$ cargo run --bin number-guessing-game
+    Finished dev [unoptimized + debuginfo] target(s) in 0.04s
+     Running `target/debug/number-guessing-game`
 Let's Play a Number Guessing Game!
 New Game: 1 20
 Guess a Number between 1 and 20: 10
@@ -128,7 +133,53 @@ You guess 9, You win with 3 guesses!
 ```
 
 ## Rust 知识点
+### Cargo
+Cargo [[2]]是 Rust 项目的编译构建和依赖管理工具，对应配置文件 Cargo.toml [[3]]，可通过 Cargo 命令创建项目：
+```shell
+$ cargo new rust-kata
+     Created binary (application) `rust-kata` package
+$ tree rust-kata
+rust-kata
+├── Cargo.toml
+└── src
+    └── main.rs
+$ cat rust-kata/Cargo.toml
+[package]
+name = "rust-kata"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+```
+默认情况下，Rust 项目只能有一个 `main` 函数作为执行入口（如 `src/main.rs`），通过 Cargo bin 可额外设置。项目依赖声明在 dependencies 配置下，可通过 crates.io [[4]]搜索三方依赖。rust-kata 配置猜数字游戏入口，添加随机数库依赖后配置如下：
+```shell
+$ cat rust-kata/Cargo.toml
+[package]
+name = "rust-kata"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rand = "0.8.5"
+
+[[bin]]
+name = "number-guessing-game"
+path = "src/bin/number_guesssing_game.rs"
+```
+程序执行方式：
+```shell
+# 执行项目主程序 src/main.rs
+$ cargo run --bin rust-kata
+# 执行猜数字游戏程序
+$ cargo run --bin number-guessing-game
+```
+
 ### 控制台输出
+
 ### 从控制台获取用户输入
 ### 函数声明与调用
 ### 字符串切分和转换
@@ -137,9 +188,15 @@ You guess 9, You win with 3 guesses!
 ### 异常处理
 
 ## 参考资料
-\[1\]. [Programming a Guessing Game, ch02 of The Rust Programming Language.][1]
+\[1\]. [Programming a Guessing Game. ch02,《Rust 编程语言》][1]  
+\[2\]. [Hello Cargo. ch03,《Rust 编程语言》][2]  
+\[3\]. [The Manifest Format. Cargo 手册][3]  
+\[4\]. [Rust 社区 crate 仓库][4]  
 
 [1]:https://doc.rust-lang.org/book/ch02-00-guessing-game-tutorial.html
+[2]:https://doc.rust-lang.org/book/ch01-03-hello-cargo.html
+[3]:https://doc.rust-lang.org/cargo/reference/manifest.html
+[4]:https://crates.io/
 [1]:https://doc.rust-lang.org/std/macro.print.html
 [2]:https://doc.rust-lang.org/std/io/index.html#standard-input-and-output
 [3]:https://doc.rust-lang.org/std/str/struct.Split.html
