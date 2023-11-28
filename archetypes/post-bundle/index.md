@@ -24,3 +24,9 @@ resources:
 toc: true
 math: false
 ---
+
+## 参考资料
+
+\[1\].   
+
+[1]:

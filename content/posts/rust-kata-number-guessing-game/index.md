@@ -1,7 +1,7 @@
 ---
 slug: "rust-kata-number-guessing-game"
 title: "Rust 卡塔：猜数字游戏"
-date: 2023-11-23T07:23:22+08:00
+date: 2023-11-28T07:23:22+08:00
 author:
   name: 水王
 tags:
@@ -207,7 +207,44 @@ let mut x = 5;
 x = 6;
 ```
 
-### 
+### 函数声明与调用
+Rust 通过 `fn` 关键字声明函数[[7]]，支持多返回值，可省略 `return` 语句，以最后一行的变量或者表达式作为函数返回值，示例代码如下：
+```rust
+fn upper_and_lower(src: &str) -> (String, String) {
+    let upper = src.to_uppercase();
+    let lower = src.to_lowercase();
+    (upper, lower)
+}
+
+fn main() {
+    let (upper, lower) = upper_and_lower("Rust");
+    println!("{upper} {lower}");
+    // RUST rust
+}
+```
+
+### 变量所有权及其租借
+Rust 不用垃圾收集器进行内存管理，而是引入了所有权机制[[8]]。简单来说，就是保证始终只有一个变量对内存区域具有所有权，所有权变量失效时对应内存就会被释放。
+
+理解栈上分配和堆上分配可以帮助我们更好的理解所有权机制。
+
+对于基础类型变量（如 u32），其长度固定，适合在栈上分配，变量间传递以复制方式进行：
+```rust
+let x: u32 = 64;
+let y = x;
+println!("x={:p} y={:p}", &x, &y);
+// 输出 x=0x7ff7b0f9ec38 y=0x7ff7b0f9ec3c
+```
+以上代码中，`let y = x;` 语句实际上复制 `x` 创建了一个新的变量，并且栈上变量跟随出栈操作即可被释放，无需引入所有权。
+
+对于复杂类型变量（如字符串、数组），其长度不固定，需要在堆上进行分配，堆上内存使用所有权机制来进行管理。要保证同时只有一个变量拥有所有权，不可避免会发生所有权变更，所有权变更可能会出现违反直觉的情况：
+```rust
+let x = String::from("Rust");
+let y = x;
+println!("x={:p} y={:p}", &x, &y);
+                          ^^ value borrowed here after move
+```
+
 
 ### 从控制台获取用户输入
 ```rust
@@ -215,7 +252,6 @@ let mut input_str = String::new();
 io::stdin().read_line(&mut input_str).expect("failed to read line");
 ```
 
-### 函数声明与调用
 ### 字符串切分和转换
 ### 分支控制
 ### 异常处理
@@ -227,7 +263,8 @@ io::stdin().read_line(&mut input_str).expect("failed to read line");
 \[4\]. [Rust 社区 crate 仓库][4]  
 \[5\]. [Rust 标准库，宏目录][5]  
 \[6\]. [Rust 标准模块：format!][6]  
-\[7\]. [Rust 标准模块：format!][7]  
+\[7\]. [Functions ch03,《Rust 编程语言》][7]  
+\[8\]. [What Is Ownership? ch04,《Rust 编程语言》][8]  
 
 [1]:https://doc.rust-lang.org/book/ch02-00-guessing-game-tutorial.html
 [2]:https://doc.rust-lang.org/book/ch01-03-hello-cargo.html
@@ -235,7 +272,9 @@ io::stdin().read_line(&mut input_str).expect("failed to read line");
 [4]:https://crates.io/
 [5]:https://doc.rust-lang.org/std/index.html#macros
 [6]:https://doc.rust-lang.org/std/fmt/index.html
-[7]:https://doc.rust-lang.org/std/io/index.html#standard-input-and-output
+[7]:https://doc.rust-lang.org/book/ch03-03-how-functions-work.html
+[8]:https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html
+[9]:https://doc.rust-lang.org/std/io/index.html#standard-input-and-output
 [3]:https://doc.rust-lang.org/std/str/struct.Split.html
 [4]:https://doc.rust-lang.org/std/fmt/
 [5]:https://docs.rs/rand/0.8.5/rand/trait.Rng.html#method.gen_range

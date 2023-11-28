@@ -1,7 +1,7 @@
 ---
 slug: "python-engineering-loguru-logging"
 title: "Python 工程化：loguru 日志集成"
-date: 2023-11-17T06:33:49+08:00
+date: 2023-11-28T07:24:49+08:00
 author:
   name: 水王
 tags:
@@ -25,3 +25,8 @@ toc: true
 math: false
 ---
 
+## 参考资料
+
+\[1\].   
+
+[1]:
