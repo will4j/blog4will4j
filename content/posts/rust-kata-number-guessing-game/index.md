@@ -179,25 +179,63 @@ $ cargo run --bin number-guessing-game
 ```
 
 ### 控制台输出
+Rust 标准库[[5]]中包含控制台输出函数 `print` 和 `println`，两者均支持 Rust 字符串格式化语法[[6]]。
+
+基于性能考虑，`print` 输出会先放到行缓冲区，不会立即打印到控制台，可通过 `io::stdout().flush()` 手动触发打印：
+
+```rust
+// 立即输出到控制台，结束后另起一行
+println!("Let's Play a Number Guessing Game!");
+// 不换行，不会立即输出到控制台，需要手动 flush，或等待下一次 println，或者等待程序运行结束
+print!("Guess a Number between {min} and {max}: ");
+io::stdout().flush().unwrap();
+```
+
+### 变量可变性
+Rust 通过 `let` 声明变量，变量默认不可变，支持修改需要通过 `mut` 关键字声明。
+
+```rust
+// x 变量不支持修改
+let x = 5;
+x = 6;
+^^^^^ cannot assign twice to immutable variable
+```
+
+```rust
+// mut x 变量支持修改
+let mut x = 5;
+x = 6;
+```
+
+### 
 
 ### 从控制台获取用户输入
+```rust
+let mut input_str = String::new();
+io::stdin().read_line(&mut input_str).expect("failed to read line");
+```
+
 ### 函数声明与调用
 ### 字符串切分和转换
-### 变量所有权
 ### 分支控制
 ### 异常处理
 
 ## 参考资料
 \[1\]. [Programming a Guessing Game. ch02,《Rust 编程语言》][1]  
 \[2\]. [Hello Cargo. ch03,《Rust 编程语言》][2]  
-\[3\]. [The Manifest Format. Cargo 手册][3]  
+\[3\]. [The Manifest Format.《Cargo 手册》][3]  
 \[4\]. [Rust 社区 crate 仓库][4]  
+\[5\]. [Rust 标准库，宏目录][5]  
+\[6\]. [Rust 标准模块：format!][6]  
+\[7\]. [Rust 标准模块：format!][7]  
 
 [1]:https://doc.rust-lang.org/book/ch02-00-guessing-game-tutorial.html
 [2]:https://doc.rust-lang.org/book/ch01-03-hello-cargo.html
 [3]:https://doc.rust-lang.org/cargo/reference/manifest.html
 [4]:https://crates.io/
-[1]:https://doc.rust-lang.org/std/macro.print.html
-[2]:https://doc.rust-lang.org/std/io/index.html#standard-input-and-output
+[5]:https://doc.rust-lang.org/std/index.html#macros
+[6]:https://doc.rust-lang.org/std/fmt/index.html
+[7]:https://doc.rust-lang.org/std/io/index.html#standard-input-and-output
 [3]:https://doc.rust-lang.org/std/str/struct.Split.html
 [4]:https://doc.rust-lang.org/std/fmt/
+[5]:https://docs.rs/rand/0.8.5/rand/trait.Rng.html#method.gen_range
