@@ -5,10 +5,10 @@ date: 2023-11-28T07:23:22+08:00
 author:
   name: 水王
 tags:
-  - draft
+  - Rust
 categories:
   - rust-kata
-draft: true
+draft: false
 comment: true
 description:
 keywords:
@@ -210,7 +210,7 @@ x = 6;
 ### 函数声明与调用
 Rust 通过 `fn` 关键字声明函数[[7]]，支持多返回值，可省略 `return` 语句，以最后一行的变量或者表达式作为函数返回值，示例代码如下：
 ```rust
-fn upper_and_lower(src: &str) -> (String, String) {
+fn upper_and_lower(str: &str) -> (String, String) {
     let upper = src.to_uppercase();
     let lower = src.to_lowercase();
     (upper, lower)
@@ -224,47 +224,124 @@ fn main() {
 ```
 
 ### 变量所有权及其租借
-Rust 不用垃圾收集器进行内存管理，而是引入了所有权机制[[8]]。简单来说，就是保证始终只有一个变量对内存区域具有所有权，所有权变量失效时对应内存就会被释放。
+Rust 没有引入垃圾收集器进行内存管理，而是使用所有权机制[[8]]。简单来说，就是保证始终只有一个变量对内存区域具有所有权，所有权变量失效时对应内存即被释放。
 
-理解栈上分配和堆上分配可以帮助我们更好的理解所有权机制。
-
-对于基础类型变量（如 u32），其长度固定，适合在栈上分配，变量间传递以复制方式进行：
+#### 所有权
+所有权机制主要用于堆内存管理。
+对于基础类型变量（如 u32），其长度固定，默认在栈上分配，变量跟随出栈操作释放，变量间传递以复制（Copy）方式进行，不需要通过所有权管理：
 ```rust
 let x: u32 = 64;
 let y = x;
-println!("x={:p} y={:p}", &x, &y);
-// 输出 x=0x7ff7b0f9ec38 y=0x7ff7b0f9ec3c
+println!("x={x} y={y}");
+// 输出 x=64 y=64
 ```
-以上代码中，`let y = x;` 语句实际上复制 `x` 创建了一个新的变量，并且栈上变量跟随出栈操作即可被释放，无需引入所有权。
+以上代码中，`let y = x;` 语句实际上复制 `x` 创建了一个新的变量，`x` 和 `y` 都存储在栈上。
 
-对于复杂类型变量（如字符串、数组），其长度不固定，需要在堆上进行分配，堆上内存使用所有权机制来进行管理。要保证同时只有一个变量拥有所有权，不可避免会发生所有权变更，所有权变更可能会出现违反直觉的情况：
+对于复杂类型变量（如字符串、数组），其长度不固定，需要在堆上进行分配。要保证同时只有一个变量对堆内存区域拥有所有权，不可避免会发生所有权变更，这时可能会出现违反直觉的现象：
 ```rust
-let x = String::from("Rust");
+let x = String::from("Rusty");
 let y = x;
-println!("x={:p} y={:p}", &x, &y);
-                          ^^ value borrowed here after move
+        - value moved here
+println!("x={x} y={y}");
+            ^^ value borrowed here after move
 ```
+以上代码中，`let y = x;` 语句执行后，变量 `x` 的所有权移交（Move）给了变量 `y`，区别于复制（Copy）的方式，**所有权移交后变量即视为失效**，后续所有对于变量 `x` 的访问在编译时就会报错。
 
+通过观察变量指针的内存地址可以更好的理解所有权移交：
+```rust
+let mut x = String::from("Rusty");
+println!("x={:p} *x={:p}", &x, &*x);
+// 输出 x=0x16f0aa940 *x=0x600001e4c040
+let y = x;
+println!("y={:p} *y={:p}", &y, &*y);
+// 输出 y=0x16f0aa9c0 *y=0x600001e4c040
+x = String::from("Rusty");
+println!("x={:p} *x={:p}", &x, &*x);
+// 输出 x=0x16f0aa940 *x=0x600001e4c050
+```
+以上代码中，`&x` 表示变量在栈上的地址，`&*x` 表示变量指向的堆内存地址。可以看到，所有权变更后，变量 `x` 和 `y` 指向相同的堆内存地址，对变量 `x` 重新分配后，其栈上内存地址不变，但是指向的堆内存地址已经发生了变更。
+
+#### 所有权租借
+在函数调用的场景下，如果实参传递使用所有权变更机制，函数调用传参后实参变量即失效，这显然不符合使用场景，这种情况就需要使用所有权租借，租借需要依赖变量引用（`&`）：
+```rust
+fn main() {
+    let x = String::from("Rusty");
+    let length = len(&x);
+    println!("{x} length={length}");
+    // 输出 Rusty length=5
+}
+
+fn len(str: &String) -> usize {
+    str.len()
+}
+```
+以上代码 `len` 函数调用传递的是变量引用 `&x`，没有发生所有权变更，因此在后续 `println` 语句中仍然可以访问变量 `x`。引用也可以对变量进行修改，但是需要通过 `&mut` 显式声明，可以参考猜数字游戏实现中的 `input` 函数。
 
 ### 从控制台获取用户输入
+获取控制台输入[[9]]使用可变引用传递的方式，将用户输入保存到字符串变量：
 ```rust
 let mut input_str = String::new();
 io::stdin().read_line(&mut input_str).expect("failed to read line");
 ```
 
 ### 字符串切分和转换
-### 分支控制
+Rust 提供多种字符串 `split` 方式[[10]]，`split` 返回的是一个迭代器对象，可根据需要再次进行映射或过滤处理，猜数字游戏实现使用的是按空白字符切分（`split_whitespace`）:
+```rust
+let x = String::from("a b c");
+let y = x.split_whitespace();
+println!("{:?}", y.collect::<Vec<_>>());
+// 输出 ["a", "b", "c"]
+```
+
+使用 `parse` 方法[[11]]可对字符串进行类型转换：
+```rust
+let four: u32 = "4".parse().unwrap();
+assert_eq!(4, four);
+```
+
+### Match 流程控制
+Rust 通过 Match [[12]]达到类似 `swtich` 的效果，但是 Match 功能更加强大。可以处理表达式，也可以处理函数返回值：
+```rust
+let x = String::from("123");
+let result = match x.parse::<u32>() {
+    Ok(num) => num,
+    Err(_) => panic!("can't parse to integer"),
+};
+```
+match 要求分支完备，上面的代码如果没有异常 `Err(_)` 处理分支，编译时会报错。
+
 ### 异常处理
+Rust 将异常分为不可恢复异常（`panic`）和可恢复异常，后者需要主动处理或者向上传递。通常以 `Result` [[13]]作为结果包装容器：
+```rust
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+```
+除了用 `match` 显式处理异常外，`Result` 有两种用 `panic` 处理异常的快捷方式，`unwrap` 和 `expect`：
+```rust
+let x = String::from("123");
+// unwrap 在异常时直接 panic，使用默认错误信息
+let result = x.parse::<u32>().unwrap();
+// expect 也在异常时直接 panic，但使用自定义错误信息
+let result = x.parse::<u32>().expect("can't parse to integer");
+```
+一般在生产环境推荐使用 `expect` 以提供更准确的上下文信息。
 
 ## 参考资料
 \[1\]. [Programming a Guessing Game. ch02,《Rust 编程语言》][1]  
-\[2\]. [Hello Cargo. ch03,《Rust 编程语言》][2]  
+\[2\]. [Hello Cargo. ch01.3,《Rust 编程语言》][2]  
 \[3\]. [The Manifest Format.《Cargo 手册》][3]  
 \[4\]. [Rust 社区 crate 仓库][4]  
 \[5\]. [Rust 标准库，宏目录][5]  
 \[6\]. [Rust 标准模块：format!][6]  
-\[7\]. [Functions ch03,《Rust 编程语言》][7]  
-\[8\]. [What Is Ownership? ch04,《Rust 编程语言》][8]  
+\[7\]. [Functions ch03.3,《Rust 编程语言》][7]  
+\[8\]. [What Is Ownership? ch04.1,《Rust 编程语言》][8]  
+\[9\]. [Rust 标准库：标准输入输出][9]  
+\[10\]. [Rust 标准模块：str split_whitespace 方法][10]  
+\[11\]. [Rust 标准模块：str parse 方法][11]  
+\[12\]. [Match 流程控制. ch06.2,《Rust 编程语言》][12]  
+\[13\]. [可恢复异常 Result. ch09.2,《Rust 编程语言》][13]  
 
 [1]:https://doc.rust-lang.org/book/ch02-00-guessing-game-tutorial.html
 [2]:https://doc.rust-lang.org/book/ch01-03-hello-cargo.html
@@ -275,6 +352,7 @@ io::stdin().read_line(&mut input_str).expect("failed to read line");
 [7]:https://doc.rust-lang.org/book/ch03-03-how-functions-work.html
 [8]:https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html
 [9]:https://doc.rust-lang.org/std/io/index.html#standard-input-and-output
-[3]:https://doc.rust-lang.org/std/str/struct.Split.html
-[4]:https://doc.rust-lang.org/std/fmt/
-[5]:https://docs.rs/rand/0.8.5/rand/trait.Rng.html#method.gen_range
+[10]:https://doc.rust-lang.org/stable/std/primitive.str.html#method.split_whitespace
+[11]:https://doc.rust-lang.org/stable/std/primitive.str.html#method.parse
+[12]:https://doc.rust-lang.org/book/ch06-02-match.html
+[13]:https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html
