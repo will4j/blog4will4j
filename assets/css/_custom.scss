@@ -1,0 +1,11 @@
+.home .home-profile .home-avatar {
+  background-size: 100% 100%;
+  padding: 1rem;
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-image: url(https://raw.githubusercontent.com/will4j/blog-resource/output/github-contribution-grid-snake.svg);
+
+  [data-theme='dark'] & {
+    background-image: url(https://raw.githubusercontent.com/will4j/blog-resource/output/github-contribution-grid-snake-dark.svg);
+  }
+}

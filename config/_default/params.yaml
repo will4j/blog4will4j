@@ -48,6 +48,11 @@ page:
       emitMetadata: "0"
       inputPosition: bottom
       lang: zh-CN
+  share:
+    enable: true
+    Twitter: true
+    Facebook: false
+    Weibo: true
 
 footer:
   enable: true
