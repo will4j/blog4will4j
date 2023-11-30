@@ -25,7 +25,7 @@ toc: true
 math: false
 ---
 
-网上冲浪看到一个同样使用 FixIt 主题的博客[[1]]，首页的贪食蛇动画一下抓住了我的眼球，看到好东西当然要搬过来，一番 Google 后终于成功搬运，来看下最终效果：
+网上冲浪看到一个同样使用 FixIt 主题的博客[[1]]，首页的贪食蛇动画一下抓住了我的眼球，看到好东西当然要搬过来，一番 Google 后终于成功，来看下最终效果：
 
 ![贪食蛇动画](images/light-snake.gif)
 
@@ -43,7 +43,7 @@ on:
   workflow_dispatch:
   schedule:
     # equal UTC/GMT+8 "30 5,17 * * *"
-    - cron: "30 1,13 * * *"
+    - cron: "30 9,21 * * *"
 
 jobs:
   generate:
@@ -77,7 +77,10 @@ jobs:
 ![snake-svg-output.png](images/snake-svg-output.png)
 
 ## 自定义首页头像 css
-参考 FixIt 文档[[3]]，可添加 `assets/css/_custom.scss` 文件进行样式自定义，先通过浏览器控制台定位首页头像元素：
+参考 FixIt 文档[[3]]，可添加 `assets/css/_custom.scss` 文件进行样式自定义。
+
+通过浏览器控制台定位首页头像元素：
+
 ![控制台定位头像](images/console-inspect.png)
 
 然后添加对应 css 样式：
@@ -99,9 +102,9 @@ jobs:
 完成收工。
 
 ## 参考资料
-\[1\][个人博客：晴空小筑][1]  
-\[2\][GitHub 仓库：Platane/snk][2]  
-\[3\][FixIt 官方文档：自定义样式][3]  
+\[1\]. [个人博客：晴空小筑][1]  
+\[2\]. [GitHub 仓库：Platane/snk][2]  
+\[3\]. [FixIt 官方文档：自定义样式][3]  
 
 [1]:https://clearsky.me/
 [2]:https://github.com/Platane/snk
