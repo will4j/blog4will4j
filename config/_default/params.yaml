@@ -38,7 +38,7 @@ page:
     enable: true
     giscus:
       enable: true
-      repo: will4j/blog-comment-base
+      repo: will4j/blog-resource
       repoId: R_kgDOKus4vg
       category: Blog Comments
       categoryId: DIC_kwDOKus4vs4CbCP2

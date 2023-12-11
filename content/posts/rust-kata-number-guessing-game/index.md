@@ -10,7 +10,7 @@ categories:
   - rust-kata
 draft: false
 comment: true
-description:
+description: Rust 编程练习：实现猜数字游戏。
 keywords:
 license:
 hiddenFromHomePage: false

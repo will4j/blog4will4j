@@ -12,7 +12,7 @@ draft: false
 hiddenFromHomePage: false
 hiddenFromSearch: false
 comment: true
-description: "从函数式编程和语法糖角度详解 Python 装饰器原理。"
+description: 从函数式编程和语法糖角度详解 Python 装饰器原理。
 keywords: ["python", "decorator"]
 ---
 
