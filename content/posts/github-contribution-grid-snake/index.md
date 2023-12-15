@@ -10,7 +10,7 @@ categories:
   - blog-build
 draft: false
 comment: true
-description:
+description: 给博客首页增加 GitHub 提交记录贪食蛇动画。
 keywords:
 license:
 hiddenFromHomePage: false
