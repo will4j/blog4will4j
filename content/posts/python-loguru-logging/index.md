@@ -1,7 +1,7 @@
 ---
-slug: "python-engineering-loguru-logging"
+slug: "python-loguru-logging"
 title: "Python 工程化：loguru 日志集成"
-date: 2023-11-28T07:24:49+08:00
+date: 2023-12-12T15:11:49+08:00
 author:
   name: 水王
 tags:
@@ -10,7 +10,7 @@ categories:
   - python-eng
 draft: true
 comment: true
-description:
+description: Python 工程化：loguru 日志集成
 keywords: ["loguru", "logging", "python"]
 license:
 hiddenFromHomePage: false
@@ -24,6 +24,8 @@ resources:
 toc: true
 math: false
 ---
+
+
 
 ## 参考资料
 
