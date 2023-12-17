@@ -3,8 +3,6 @@
 # https://taskfile.dev/styleguide/
 version: '3'
 
-vars:
-
 tasks:
   default:
     cmds:
