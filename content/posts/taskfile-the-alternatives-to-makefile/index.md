@@ -249,7 +249,7 @@ tasks:
 ```
 
 ### 引用其他 Taskfile
-Taskfile 引用可以在多种场景中发挥作用，比方说引入通用工具类，或者根据功能不同将任务进行分组等。
+Taskfile 引用可以在多种场景中发挥作用，比方说引入通用工具类，或者根据功能不同将任务按文件进行分组等。
 
 可以像如下示例中的 `docs` 一样直接使用路径进行引入，也可以像 `dev` 一样定义参数引入，需要注意的是，引入后的所有命令默认都在当前 `Taskfile` 目录下执行，除非通过 `dir` 参数修改引入脚本的执行目录。
 
@@ -295,8 +295,6 @@ task: Available tasks for this project:
 * docs:build:       build docs
 ```
 
-### 任务调试
-
 ## 进阶使用
 ### 动态变量
 可以通过 shell 脚本在运行时动态设置变量的值。比如下面的任务会获取当前 Git 提交哈希值设置变量 `IMAGE_TAG`：
@@ -310,9 +308,136 @@ vars:
 ```
 
 ### 非必要不执行
-对于生成式任务或者执行成本较大的任务，
+对于有中间产物生成的任务，可以通过设置条件判断中间产物是否需要更新，从而减少不必要的任务执行。
+
+通过 `task --force` 或者 `task -f` 可以强制执行任务。
+
+#### 文件内容比对
+Task 通过 `sources` 和 `generates` 指定源文件和中间产物，支持文件路径或者 glob 表达式，提供两种校验方式：
+
++ `checksum`： 中间产物生成后，Task 记录源文件的校验和，只有当源文件校验和发生变更时任务才需要重新执行
++ `timestamp`：Task 记录最后一次任务执行时间，只有当任一源文件修改时间比最后执行任务时间新时任务才需要重新执行
+
+默认方式为 `timestamp`，两种校验方式可以通过观察项目根目录下的 .task 文件夹内容验证。使用示例如下：
+
+```yaml
+version: '3'
+
+tasks:
+  build:
+    cmds:
+      - go build .
+    sources:
+      - ./*.go
+    generates:
+      - app{{exeExt}}
+    method: checksum # or timestamp
+```
+
+#### 命令执行比对
+可以通过 `status` 运行命令测试，根据命令执行结果判断中间产物是否需要更新，这种方式具有非常大的灵活度。
+
+比如下面的例子判断只要 `directory` 目录以及其下的两个文件存在，任务就不需要重复执行：
+
+```yaml
+version: '3'
+
+tasks:
+  generate-files:
+    cmds:
+      - mkdir directory
+      - touch directory/file1.txt
+      - touch directory/file2.txt
+    # test existence of files
+    status:
+      - test -d directory
+      - test -f directory/file1.txt
+      - test -f directory/file2.txt
+```
+
 ### go 模板引擎
-### 循环执行
+Task 脚本在执行之前会使用 Go 模板引擎[[5]]进行解析，支持全部 slim-sprig 库函数[[6]]以及 Task 额外增加的平台相关等函数。
+
+使用示例如下：
+
+```yaml
+version: '3'
+
+tasks:
+  print-os:
+    cmds:
+      - echo '{{OS}} {{ARCH}}'
+      - echo '{{if eq OS "windows"}}windows-command{{else}}unix-command{{end}}'
+      # This will be path/to/file on Unix but path\to\file on Windows
+      - echo '{{fromSlash "path/to/file"}}'
+```
+
+## Windows 环境使用
+开头介绍 Task 时说到 Windows 完全兼容执行需要依赖 GitBash，实际上 Task 使用 go 原生 sh 解析库 mvdan/sh [[7]]解析 shell 脚本，其提供非完全跨平台的能力，使用 GitBash 是为了补齐 Windows 不支持的部分内置 shell 命令，如 `rm`、`mv` 等，所以这里进行单独说明，Windows 平台按照使用指南
+
+```shell
+# 使用 管理员权限 打开 powershell
+# 一行命令安装 Chocolatey
+$ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+# 验证 Chocolatey
+$ choco
+# 使用 Chocolatey 安装 go-task
+$ choco install go-task
+# 打开 GitBash 窗口，执行 task 命令
+$ task --list
+```
+
+## 总结
+使用 Task 将项目构建过程定义为自动化脚本，在提升工作效率的同时，同时也是在进行知识沉淀，类似的脚本可以复用，不断丰富自己的工具箱。
+
+下面是我在 Python 项目中基本都会使用到的一段脚本，主要功能包括：
+
+1. 根据 conda 虚拟环境目录是否存在，自动执行虚拟环境创建或者虚拟环境更新；
+2. 识别 `environment.yml`，`requirements.txt` 配置文件修改时间，判断是否需要重新执行依赖安装；
+3. 设置 `PYTHONPATH` 环境变量为项目根目录，遵循 Python 模块路径导入规范；
+
+使用这段脚本后，不管是初次克隆项目还是项目代码更新，只需要简单执行 `task` 命令然后回车，脚本就会自动处理虚拟环境设置工作，多人协作时大家使用相同的脚本构建可以保证环境一致性。同时因为监听了配置文件修改时间，多次重复执行 `task` 命令也不会有负担。
+
+```yaml
+version: '3'
+
+vars:
+  CONDA_PREFIX: ./venv
+  CONDA_ENV_FILE: environment.yml
+  PIP_REQ_FILE: requirements.txt
+
+tasks:
+  default:
+    desc: build or update venv
+    cmds:
+      - task: venv:build
+    silent: true
+
+  venv:build:
+    desc: build conda venv when config file updated
+    cmds:
+      - task: venv:inner-build
+      - task: venv:config-vars
+    silent: true
+
+  venv:inner-build:
+    internal: true
+    silent: true
+    cmds:
+      - test ! -d {{.CONDA_PREFIX}} || conda env update -f {{.CONDA_ENV_FILE}} -p {{.CONDA_PREFIX}}
+      - test -d {{.CONDA_PREFIX}} || conda env create -f {{.CONDA_ENV_FILE}} -p {{.CONDA_PREFIX}}
+      - touch {{.CONDA_PREFIX}}
+    status:
+      - test {{.CONDA_PREFIX}} -nt {{.CONDA_ENV_FILE}}
+      - test {{.CONDA_PREFIX}} -nt {{.PIP_REQ_FILE}}
+  venv:config-vars:
+    desc: config environment variables of venv
+    cmds:
+      - conda env config vars set PYTHONPATH="{{.PYTHONPATH}}" -p {{.CONDA_PREFIX}}
+    vars:
+      PYTHONPATH:
+        sh: pwd
+```
 
 ## 参考资料
 
@@ -320,8 +445,14 @@ vars:
 \[2\]. [Task 官方安装文档][2]  
 \[3\]. [Task 官方使用指南][3]  
 \[4\]. [Task 命令参数][4]  
+\[5\]. [Task Go 模板引擎][5]  
+\[6\]. [slim-sprig 库函数][6]  
+\[7\]. [GitHub：mvdan/sh][7]  
 
 [1]: https://taskfile.dev/api/#taskfile-schema
 [2]: https://taskfile.dev/installation/
 [3]: https://taskfile.dev/usage/
 [4]: https://taskfile.dev/api/#command
+[5]: https://taskfile.dev/usage/#gos-template-engine
+[6]: https://go-task.github.io/slim-sprig/
+[7]: https://github.com/mvdan/sh
