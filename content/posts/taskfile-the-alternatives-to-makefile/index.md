@@ -318,7 +318,7 @@ Task 通过 `sources` 和 `generates` 指定源文件和中间产物，支持文
 + `checksum`： 中间产物生成后，Task 记录源文件的校验和，只有当源文件校验和发生变更时任务才需要重新执行
 + `timestamp`：Task 记录最后一次任务执行时间，只有当任一源文件修改时间比最后执行任务时间新时任务才需要重新执行
 
-默认方式为 `timestamp`，两种校验方式可以通过观察项目根目录下的 .task 文件夹内容验证。使用示例如下：
+默认方式为 `checksum`，两种校验方式可以通过观察项目根目录下的 .task 文件夹内容验证。使用示例如下：
 
 ```yaml
 version: '3'
@@ -373,7 +373,7 @@ tasks:
 ```
 
 ## Windows 环境使用
-开头介绍 Task 时说到 Windows 完全兼容执行需要依赖 GitBash，实际上 Task 使用 go 原生 sh 解析库 mvdan/sh [[7]]解析 shell 脚本，其提供非完全跨平台的能力，使用 GitBash 是为了补齐 Windows 不支持的部分内置 shell 命令，如 `rm`、`mv` 等，所以这里进行单独说明，Windows 平台按照使用指南
+开头介绍 Task 时说到 Windows 完全兼容执行需要依赖 GitBash，实际上 Task 使用 go 原生 sh 解析库 mvdan/sh [[7]]解析 shell 脚本，其提供非完全跨平台的能力，使用 GitBash 是为了补齐 Windows 不支持的部分内置 shell 命令，如 `rm`、`mv` 等，所以这里进行单独说明，Windows 平台安装使用指南如下：
 
 ```shell
 # 使用 管理员权限 打开 powershell
@@ -388,7 +388,7 @@ $ task --list
 ```
 
 ## 总结
-使用 Task 将项目构建过程定义为自动化脚本，在提升工作效率的同时，同时也是在进行知识沉淀，类似的脚本可以复用，不断丰富自己的工具箱。
+使用 Task 将项目构建过程定义为自动化脚本，在提升工作效率的同时，也是在进行知识沉淀，类似的脚本可以复用，不断丰富自己的工具箱。
 
 下面是我在 Python 项目中基本都会使用到的一段脚本，主要功能包括：
 
@@ -430,6 +430,7 @@ tasks:
     status:
       - test {{.CONDA_PREFIX}} -nt {{.CONDA_ENV_FILE}}
       - test {{.CONDA_PREFIX}} -nt {{.PIP_REQ_FILE}}
+
   venv:config-vars:
     desc: config environment variables of venv
     cmds:
