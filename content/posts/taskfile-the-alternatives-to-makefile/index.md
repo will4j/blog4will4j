@@ -25,6 +25,10 @@ toc: true
 math: false
 ---
 
+{{< admonition abstract >}}
+这篇文章介绍自动化构建工具 `go-task` 的使用，涵盖工具安装、基本语法规则以及进阶使用，另外对在 `Windows` 平台使用进行了特殊说明。总结部分提供的 `Python` 虚拟环境自动构建脚本是对全文内容的综合实践，也是我真正应用到项目中，确实有带来生产效率提升的实用脚本，欢迎使用。
+{{< /admonition >}}
+
 Task 是用 Go 语言编写的任务执行/构建工具，对比 GNU make，Task 语法规则[[1]]更加简单且语义化，学习成本更低，同时 Task 脚本支持跨平台执行，除了 Linux 和 Mac 外，Windows 系统通过使用 GitBash 也能完全兼容执行。使用 Task 编写构建任务、自动化脚本，可以极大提高开发协作效率。
 
 Task 执行文件为 `Taskfile`，采用 `yaml` 格式，下面以 cowsay 为例进行快速开始演示：
@@ -318,7 +322,7 @@ Task 通过 `sources` 和 `generates` 指定源文件和中间产物，支持文
 + `checksum`： 中间产物生成后，Task 记录源文件的校验和，只有当源文件校验和发生变更时任务才需要重新执行
 + `timestamp`：Task 记录最后一次任务执行时间，只有当任一源文件修改时间比最后执行任务时间新时任务才需要重新执行
 
-默认方式为 `timestamp`，两种校验方式可以通过观察项目根目录下的 .task 文件夹内容验证。使用示例如下：
+默认方式为 `checksum`，两种校验方式可以通过观察项目根目录下的 .task 文件夹内容验证。使用示例如下：
 
 ```yaml
 version: '3'
@@ -373,7 +377,7 @@ tasks:
 ```
 
 ## Windows 环境使用
-开头介绍 Task 时说到 Windows 完全兼容执行需要依赖 GitBash，实际上 Task 使用 go 原生 sh 解析库 mvdan/sh [[7]]解析 shell 脚本，其提供非完全跨平台的能力，使用 GitBash 是为了补齐 Windows 不支持的部分内置 shell 命令，如 `rm`、`mv` 等，所以这里进行单独说明，Windows 平台按照使用指南
+开头介绍 Task 时说到 Windows 完全兼容执行需要依赖 GitBash，实际上 Task 使用 go 原生 sh 解析库 mvdan/sh [[7]]解析 shell 脚本，其提供非完全跨平台的能力，使用 GitBash 是为了补齐 Windows 不支持的部分内置 shell 命令，如 `rm`、`mv` 等，所以这里进行单独说明，Windows 平台安装使用指南如下：
 
 ```shell
 # 使用 管理员权限 打开 powershell
@@ -388,7 +392,7 @@ $ task --list
 ```
 
 ## 总结
-使用 Task 将项目构建过程定义为自动化脚本，在提升工作效率的同时，同时也是在进行知识沉淀，类似的脚本可以复用，不断丰富自己的工具箱。
+使用 Task 将项目构建过程定义为自动化脚本，在提升工作效率的同时，也是在进行知识沉淀，类似的脚本可以复用，不断丰富自己的工具箱。同时可参考 Taskfile 规范[[8]]，编写高质量的脚本代码。
 
 下面是我在 Python 项目中基本都会使用到的一段脚本，主要功能包括：
 
@@ -396,7 +400,7 @@ $ task --list
 2. 识别 `environment.yml`，`requirements.txt` 配置文件修改时间，判断是否需要重新执行依赖安装；
 3. 设置 `PYTHONPATH` 环境变量为项目根目录，遵循 Python 模块路径导入规范；
 
-使用这段脚本后，不管是初次克隆项目还是项目代码更新，只需要简单执行 `task` 命令然后回车，脚本就会自动处理虚拟环境设置工作，多人协作时大家使用相同的脚本构建可以保证环境一致性。同时因为监听了配置文件修改时间，多次重复执行 `task` 命令也不会有负担。
+使用这段脚本后，不管是初次克隆项目还是项目代码更新，只需要简单执行 `task` 命令然后回车，脚本就会自动处理虚拟环境设置工作，多人协作时大家使用相同的脚本构建可以保证环境一致性。同时因为监听了配置文件修改时间，脚本判断只有在必要的时候才真正执行环境构建，多次重复执行 `task` 命令也不会有负担。
 
 ```yaml
 version: '3'
@@ -430,6 +434,7 @@ tasks:
     status:
       - test {{.CONDA_PREFIX}} -nt {{.CONDA_ENV_FILE}}
       - test {{.CONDA_PREFIX}} -nt {{.PIP_REQ_FILE}}
+
   venv:config-vars:
     desc: config environment variables of venv
     cmds:
@@ -448,6 +453,7 @@ tasks:
 \[5\]. [Task Go 模板引擎][5]  
 \[6\]. [slim-sprig 库函数][6]  
 \[7\]. [GitHub：mvdan/sh][7]  
+\[8\]. [Taskfile 编写规范][8]  
 
 [1]: https://taskfile.dev/api/#taskfile-schema
 [2]: https://taskfile.dev/installation/
@@ -456,3 +462,4 @@ tasks:
 [5]: https://taskfile.dev/usage/#gos-template-engine
 [6]: https://go-task.github.io/slim-sprig/
 [7]: https://github.com/mvdan/sh
+[8]: https://taskfile.dev/styleguide/
