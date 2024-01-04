@@ -1,7 +1,7 @@
 ---
 slug: "python-loguru-logging"
 title: "Python 工程化：Loguru 日志集成"
-date: 2023-12-29T20:11:49+08:00
+date: 2024-01-04T10:11:49+08:00
 author:
   name: 水王
 tags:
@@ -26,7 +26,7 @@ math: false
 ---
 
 {{< admonition abstract >}}
-本文通过比较
+这篇文章综合考虑标准日志模块的统一接口以及 `Loguru` 日志框架的简便性，采用仅以标准日志模块作为日志门面，实际日志使用 `Loguru` 来输出的方案，并提供了方案的具体实现。通过这种方式，项目可以使用如 `YAML` 等纯文本配置文件进行日志配置，日志打印时只使用标准日志模块接口，使得业务代码和具体日志实现相隔离。
 {{< /admonition >}}
 
 日志在开发中的地位不言而喻，规范的日志一如“书同文，车同轨”一般，不仅能灵活的进行日志搜索和过滤，更能清晰的展示业务流程，成为跨系统调用的“硬通货”。在排查线上问题时，关键日志往往能提供重要线索，帮助从一团乱麻中快速定位问题，甚至能省下数小时时间。更进一步，日志也作为系统的数据资产，从海量日志中可以分析出很多有价值的业务信息。
@@ -202,11 +202,17 @@ formatters:
 
 ![Loguru Intercept Handler](images/loguru-intercept-handler.png)
 
-Loguru 支持通过 `logger.configure()` 方法[[8]]完成日志配置，所有配置参数可通过 `LoguruInterceptHandler` 构造函数获取，而构造函数可以通过标准日志模块字典配置的类工厂引入。
+Loguru 支持通过 `logger.configure()` 方法完成日志配置，所有配置参数可通过 `LoguruInterceptHandler` 构造函数获取，而构造函数可以通过标准日志模块字典配置的类工厂引入。
 
 #### yaml 配置样例
 
-使用类似下面的 YAML 配置初始化标准日志模块，期望将 `loguru_config` 下的属性传递给 `logger.configure()` 完成 loguru 配置，这里配置将所有 INFO 日志输出到标准控制台。
+使用类似下面的 YAML 配置初始化标准日志模块，期望将 `loguru_config` 属性传递给 `logger.configure()` 完成 loguru 配置，要达到的效果如下：
+
+1. 通过 `loguru_format` 配置日志输出格式；
+2. 配置三个日志输出项，分别为 `stdout`、`stderr` 以及日志文件 `file.log`；
+3. 使用 `loguru_logging.compact_name_format` 函数进行格式化，其作用是压缩日志中的路径，比如 `long.module.dir.log` 压缩后输出为 `l.m.dir.log`；
+4. 支持 `lambda://` 前缀声明 lambda 表达式，达到 `stdout` 不输出 `ERROR` 级别的效果；
+5. 日志文件 `file.log` 每天零点压缩归档，压缩格式为 `tar.gz`；
 
 ```yaml
 # logging.yml
@@ -219,7 +225,7 @@ root:
   level: INFO
 handlers:
   loguru:
-    class: meta_repository.logging.LoguruInterceptHandler
+    class: loguru_logging.LoguruInterceptHandler
     # constructor param starts with loguru_
     loguru_format: "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
     loguru_config:
@@ -228,9 +234,32 @@ handlers:
         # param: https://loguru.readthedocs.io/en/stable/api/logger.html#loguru._logger.Logger.add
         - sink: ext://sys.stdout
           level: INFO
+          format: ext://loguru_logging.compact_name_format
+          filter: 'lambda://record:record["level"].no < logging.ERROR'
+        - sink: ext://sys.stderr
+          level: ERROR
+          format: ext://loguru_logging.compact_name_format
+        - sink: "file.log"
+          rotation: "00:00"
+          compression: "tar.gz"
+          level: INFO
+          format: ext://meta_repository.loguru_logging.compact_name_format
+
 ```
 
+完整的配置支持可参考基于字典的标准日志模块配置[[6]]以及 `logger.configure()` API 文档[[8]]。
+
 #### 拦截器实现
+
+接下来基于示例 YAML 配置文件的声明，进行拦截器实现，主要包括：
+
+1. `LoguruInterceptHandler` 类构造函数接收配置参数，并在构造函数中完成日志配置；
+2. 继承 `logging.config.BaseConfigurator` 实现 loguru 配置类 `LoguruDictConfigurator`，以复用路径解析、 `ext://` 前缀等功能；
+3. 参考 `logger.configure()` api 文档，在 `LoguruDictConfigurator.configure` 方法中构造 loguru 配置参数；
+4. 扩展 `value_converters` 支持 `lambda://` 前缀表达式；
+5. 实现 `compact_name_format` 动态格式化函数，对 `name` 进行压缩；
+
+具体实现如下：
 
 ```python
 import inspect
@@ -389,6 +418,39 @@ def compact_path(path: str, retain=2) -> str:
     slices = path.split(".")
     # i.a.s.namespaces.teach_namespace
     return ".".join([s[0] for s in slices[:-retain] if s]) + "." + ".".join(slices[-retain:])
+```
+
+## 总结
+
+具体实现看起来比较复杂，但实际上只是把复杂的事情做一次，后续简单的事情重复 n 次，所获得的收益还是值得的。
+
+使用这种配置方式，只需要在项目根目录配置好对应的 `logging.yml`，然后在项目入口完成日志配置，比如：
+
+```python
+import logging.config
+
+import yaml
+
+# 初始化日志配置文件
+with open('logging.yml', "r") as conf:
+    conf_dict = yaml.load(conf, Loader=yaml.FullLoader)
+    logging.config.dictConfig(conf_dict)
+
+if __name__ == '__main__':
+    app.run()
+
+```
+
+其他模块通过标准日志模块打印日志即可，如：
+
+```python
+import logging
+
+logger = logging.getLogger(__name__)
+
+def demo_function():
+    logger.info("This is a standard log but will log by loguru.")
+
 ```
 
 ## 参考资料
